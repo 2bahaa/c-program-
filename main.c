@@ -69,10 +69,10 @@ void addNewPatient(struct Patient patients[], int *num_patients) {
     }
 
     printf("Enter patient name: ");
-    scanf("%s", patients[*num_patients].name);
+   gets(patients[*num_patients].name);
 
     printf("Enter patient status: ");
-    scanf("%s", patients[*num_patients].status);
+    gets(patients[*num_patients].status);
 
     patients[*num_patients].patient_id = 100+ *num_patients + 1;
 
@@ -134,7 +134,10 @@ void updatePatientData(struct Patient patients[], int num_patients) {
 
     if (patient_index != -1) {
         printf("Enter new status for patient %d: ", patient_id);
-        scanf("%s", patients[patient_index].status);
+        fflush(stdin);
+       gets(patients[patient_index].status);
+               fflush(stdin);
+
         printf("Patient data updated successfully\n");
         // Display information of all patients
     printf("\nInformation of all patients:\n");
@@ -162,10 +165,10 @@ int main() {
     struct Room rooms[10] = {{1, 1, 0}, {2, 1, 0}, {3, 0, 101}, {4, 1, 0}, {5, 0, 102},
                              {6, 0, 103}, {7, 1, 0}, {8, 1, 0}, {9, 0, 104}, {10, 1, 0}};
   struct Patient patients[4] = {{101, "tolba", "unstable"}, {102, "bahaa", "Stable"},
-                                  {103, "7eeta", "enjured"}, {104, "bahram", "Stable"}};
+                                  {103, "7eeta", "mentally Injured"}, {104, "bahram", "insane"}};
 
     struct User users[3] = {
-        {"admin", "a123", "admin"},    // Admin role
+        {"main", "m123", "main"},    // main role
         {"doctor", "d123", "doctor"}, // Doctor role
         {"nurse", "n123", "nurse"}     // Nurse role
     };
@@ -174,7 +177,7 @@ int num_patients = sizeof(patients) / sizeof(patients[0]);
     int num_users = sizeof(users) / sizeof(users[0]);
     int num_rooms = sizeof(rooms) / sizeof(rooms[0]);
 
-    // Login
+    // Login variables
     char username[50];
     char password[50];
     int user_index;
@@ -205,26 +208,32 @@ int num_patients = sizeof(patients) / sizeof(patients[0]);
         printf("3. Check Empty Rooms\n");
         printf("4. Update Patient's Data\n");
         printf("5. Logout\n");
+                printf("6. Exit\n");
+
         printf("Enter your choice: ");
-        choice = readIntInRange(1, 5); // Restrict the input to be within the range of 1 to 5
+        choice = readIntInRange(1, 6); // Restrict the input to be within the range of 1 to 5
 
         switch (choice) {
             case 1:
-                if (strcmp(users[user_index].role, "admin") == 0|| strcmp(users[user_index].role,"nurse")==0) {
+                if (strcmp(users[user_index].role, "doctor") == 0|| strcmp(users[user_index].role,"nurse")==0) {
                     addNewPatient(patients, &num_patients);
                 } else {
                     printf("You do not have permission to add a new patient.\n");
                 }
                 break;
             case 2:
-                if (strcmp(users[user_index].role, "nurse") == 0) {
+                if (strcmp(users[user_index].role, "main") == 0) {
                     removeReservation(rooms, num_rooms);
                 } else {
                     printf("You do not have permission to remove reservations.\n");
                 }
                 break;
             case 3:
+                if (strcmp(users[user_index].role, "main") == 0)
                 checkEmptyRooms(rooms, num_rooms);
+                else {
+                    printf("You do not have permission to remove reservations.\n");
+                }
                 break;
             case 4:
                 if (strcmp(users[user_index].role, "doctor") == 0 || strcmp(users[user_index].role,"nurse")==0) {
@@ -235,12 +244,28 @@ int num_patients = sizeof(patients) / sizeof(patients[0]);
                 break;
             case 5:
                 printf("Logged out successfully\n");
+                do {
+        printf("Please enter your username: ");
+        scanf("%s", username);
+        printf("Enter password: ");
+        scanf("%s", password);
+
+        user_index = login(users, num_users, username, password);
+
+        if (user_index == -1) {
+            printf("Invalid username or password. Please try again.\n");
+        }
+
+    } while (user_index == -1);
+                break;
+            case 6:
+                printf("Exit Whole Program");
                 break;
             default:
                 printf("Invalid choice. Please try again.\n");
         }
 
-    } while (choice != 5);
+    } while (choice != 6);
 
     // Free dynamically allocated memory for patients
     //free(patients);
