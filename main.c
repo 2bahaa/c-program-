@@ -270,6 +270,7 @@ int num_patients = sizeof(patients) / sizeof(patients[0]);
     // Free dynamically allocated memory for patients
     //free(patients);
     //adding features
+    //main push
     return 0;
 }
 
