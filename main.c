@@ -270,5 +270,8 @@ int num_patients = sizeof(patients) / sizeof(patients[0]);
     // Free dynamically allocated memory for patients
     //free(patients);
     //commit after push
+    //adding features
+
     return 0;
 }
+
